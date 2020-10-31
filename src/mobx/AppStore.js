@@ -1,22 +1,85 @@
-import {action, computed, observable} from 'mobx';
+import { observable, action, computed } from 'mobx';
+import { v4 } from 'uuid';
 
-class App {
-  @observable count = 0;
+class Store {
+  @observable todos = [];
 
-  @action handleIncrease = () => {
-    this.count++;
-  }
+  @observable title = '';
 
-  @action handleDecrease = () => {
-    if (this.count) {
-      this.count--;
+  @observable activeFilter = 'all';
+
+  @action handleChange = ({ target: { value } }) => {
+    this.title = value;
+  };
+
+  @action handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (this.title.trim().length > 0) {
+      const id = v4();
+
+      this.todos = [
+        ...this.todos,
+        {
+          text: this.title,
+          completed: false,
+          id,
+        },
+      ];
     }
-  }
 
-  @computed get newNumber () {
-    return this.count + 5;
+    this.title = '';
+  };
+
+  @action handleCheckBox = (id) => {
+    this.todos = this.todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed: !todo.completed,
+        };
+      }
+
+      return todo;
+    });
+  };
+
+  @action handleRemove = (id) => {
+    this.todos = this.todos.filter(todo => id !== todo.id);
+  };
+
+  @action handleActiveFilter = (activeFilter) => {
+    this.activeFilter = activeFilter;
+  };
+
+  @action handleClearCompleted = () => {
+    this.todos = this.todos.filter(todo => !todo.completed);
+  };
+
+  @action handleClickAll = () => {
+    this.todos = this.todos.some(todo => !todo.completed)
+      ? this.todos.map(todo => ({
+        ...todo, completed: true,
+      }))
+      : this.todos.map(todo => ({
+        ...todo, completed: !todo.completed,
+      }));
+  };
+
+  @computed get filteredTodos () {
+    switch (this.activeFilter) {
+      case 'active':
+        return this.todos.filter(todo => !todo.completed);
+
+      case 'completed':
+        return this.todos.filter(todo => todo.completed);
+
+      default:
+        return this.todos;
+    }
   }
 }
 
-const AppStore = new App();
-export default AppStore;
+const todoListStore = new Store();
+
+export default todoListStore;
