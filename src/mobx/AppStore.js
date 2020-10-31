@@ -78,6 +78,10 @@ class Store {
         return this.todos;
     }
   }
+
+  @computed get allTodoIsChecked () {
+    return this.todos.every(todo => todo.completed);
+  }
 }
 
 const todoListStore = new Store();

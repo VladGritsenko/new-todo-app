@@ -8,25 +8,24 @@ import TodoList from './components/TodoList/TodoList';
 import Footer from './components/Footer/Footer';
 
 const App = () => {
-  const { todos, handleClickAll } = AppStore;
+  const { todos, allTodoIsChecked, handleClickAll } = AppStore;
 
   return (
     <section className="todoapp">
       <TodoHeader />
-      <main className="main" style={{ display: 'block' }}>
+      <main className="main">
         <input
           type="checkbox"
           id="toggle-all"
           className="toggle-all"
-          checked={todos.every(todo => todo.completed)}
+          checked={allTodoIsChecked}
           onClick={handleClickAll}
         />
         {!!todos.length && (
           <label htmlFor="toggle-all">
             Mark all as complete
           </label>
-        )
-        }
+        )}
         <TodoList />
       </main>
       {!!todos.length && <Footer />}
