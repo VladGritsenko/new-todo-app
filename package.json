@@ -1,5 +1,6 @@
 {
-  "name": "new todo app",
+  "homepage": "https://vladgritsenko.github.io/new-todo-app/",
+  "name": "new_todo_app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
